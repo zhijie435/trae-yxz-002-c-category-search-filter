@@ -3,7 +3,7 @@
     <SearchBar :total="total" @search="handleSearch" />
 
     <main class="max-w-7xl mx-auto px-6 py-8">
-      <ScenarioSection />
+      <LeftCategorySidebar />
 
       <ManufacturerSection />
 
@@ -128,7 +128,7 @@ import { ref, onMounted } from 'vue'
 import { Bot, Layers } from 'lucide-vue-next'
 import SearchBar from '@/components/SearchBar.vue'
 import RobotCard from '@/components/RobotCard.vue'
-import ScenarioSection from '@/components/ScenarioSection.vue'
+import LeftCategorySidebar from '@/components/LeftCategorySidebar.vue'
 import ManufacturerSection from '@/components/ManufacturerSection.vue'
 import AiArticleSection from '@/components/AiArticleSection.vue'
 import AccessorySection from '@/components/AccessorySection.vue'

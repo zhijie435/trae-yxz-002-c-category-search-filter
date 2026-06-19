@@ -418,6 +418,56 @@ export const scenarioCategories: ScenarioCategory[] = [
     description: '焊接、装配、搬运、码垛',
     count: 48,
     color: 'from-blue-500',
+    children: [
+      {
+        id: 'sc1-1',
+        name: '焊接机器人',
+        count: 12,
+        children: [
+          { id: 'sc1-1-1', name: '电弧焊接机器人', count: 5 },
+          { id: 'sc1-1-2', name: '激光焊接机器人', count: 4 },
+          { id: 'sc1-1-3', name: '点焊机器人', count: 3 },
+        ],
+      },
+      {
+        id: 'sc1-2',
+        name: '装配机器人',
+        count: 10,
+        children: [
+          { id: 'sc1-2-1', name: '汽车装配机器人', count: 4 },
+          { id: 'sc1-2-2', name: '电子装配机器人', count: 4 },
+          { id: 'sc1-2-3', name: '精密装配机器人', count: 2 },
+        ],
+      },
+      {
+        id: 'sc1-3',
+        name: '搬运码垛机器人',
+        count: 15,
+        children: [
+          { id: 'sc1-3-1', name: '码垛机器人', count: 6 },
+          { id: 'sc1-3-2', name: '上下料机器人', count: 5 },
+          { id: 'sc1-3-3', name: '注塑取件机器人', count: 4 },
+        ],
+      },
+      {
+        id: 'sc1-4',
+        name: '喷涂机器人',
+        count: 6,
+        children: [
+          { id: 'sc1-4-1', name: '汽车喷涂机器人', count: 3 },
+          { id: 'sc1-4-2', name: '家电喷涂机器人', count: 3 },
+        ],
+      },
+      {
+        id: 'sc1-5',
+        name: '打磨抛光机器人',
+        count: 5,
+        children: [
+          { id: 'sc1-5-1', name: '金属打磨机器人', count: 3 },
+          { id: 'sc1-5-2', name: '抛光机器人', count: 2 },
+        ],
+      },
+    ],
   },
   {
     id: 'sc2',
@@ -426,6 +476,47 @@ export const scenarioCategories: ScenarioCategory[] = [
     description: '酒店、餐饮、零售配送',
     count: 36,
     color: 'from-orange-500',
+    children: [
+      {
+        id: 'sc2-1',
+        name: '酒店服务机器人',
+        count: 10,
+        children: [
+          { id: 'sc2-1-1', name: '送物机器人', count: 4 },
+          { id: 'sc2-1-2', name: '引导机器人', count: 3 },
+          { id: 'sc2-1-3', name: '前台接待机器人', count: 3 },
+        ],
+      },
+      {
+        id: 'sc2-2',
+        name: '餐饮服务机器人',
+        count: 12,
+        children: [
+          { id: 'sc2-2-1', name: '送餐机器人', count: 6 },
+          { id: 'sc2-2-2', name: '传菜机器人', count: 4 },
+          { id: 'sc2-2-3', name: '收盘机器人', count: 2 },
+        ],
+      },
+      {
+        id: 'sc2-3',
+        name: '零售服务机器人',
+        count: 8,
+        children: [
+          { id: 'sc2-3-1', name: '导购机器人', count: 3 },
+          { id: 'sc2-3-2', name: '盘点机器人', count: 3 },
+          { id: 'sc2-3-3', name: '移动售货机器人', count: 2 },
+        ],
+      },
+      {
+        id: 'sc2-4',
+        name: '政务服务机器人',
+        count: 6,
+        children: [
+          { id: 'sc2-4-1', name: '政务大厅机器人', count: 3 },
+          { id: 'sc2-4-2', name: '税务服务机器人', count: 3 },
+        ],
+      },
+    ],
   },
   {
     id: 'sc3',
@@ -434,6 +525,46 @@ export const scenarioCategories: ScenarioCategory[] = [
     description: '陪护、康复、消毒、配送',
     count: 25,
     color: 'from-emerald-500',
+    children: [
+      {
+        id: 'sc3-1',
+        name: '医疗陪护机器人',
+        count: 8,
+        children: [
+          { id: 'sc3-1-1', name: '病房陪护机器人', count: 3 },
+          { id: 'sc3-1-2', name: '导诊机器人', count: 3 },
+          { id: 'sc3-1-3', name: '健康监测机器人', count: 2 },
+        ],
+      },
+      {
+        id: 'sc3-2',
+        name: '康复训练机器人',
+        count: 7,
+        children: [
+          { id: 'sc3-2-1', name: '下肢康复机器人', count: 3 },
+          { id: 'sc3-2-2', name: '上肢康复机器人', count: 2 },
+          { id: 'sc3-2-3', name: '手功能康复机器人', count: 2 },
+        ],
+      },
+      {
+        id: 'sc3-3',
+        name: '消毒机器人',
+        count: 6,
+        children: [
+          { id: 'sc3-3-1', name: '紫外线消毒机器人', count: 3 },
+          { id: 'sc3-3-2', name: '喷雾消毒机器人', count: 3 },
+        ],
+      },
+      {
+        id: 'sc3-4',
+        name: '药品配送机器人',
+        count: 4,
+        children: [
+          { id: 'sc3-4-1', name: '药房送药机器人', count: 2 },
+          { id: 'sc3-4-2', name: '手术室配送机器人', count: 2 },
+        ],
+      },
+    ],
   },
   {
     id: 'sc4',
@@ -442,6 +573,37 @@ export const scenarioCategories: ScenarioCategory[] = [
     description: 'STEM教育、竞赛、编程学习',
     count: 18,
     color: 'from-violet-500',
+    children: [
+      {
+        id: 'sc4-1',
+        name: '教育编程机器人',
+        count: 8,
+        children: [
+          { id: 'sc4-1-1', name: '图形化编程机器人', count: 4 },
+          { id: 'sc4-1-2', name: 'Python编程机器人', count: 2 },
+          { id: 'sc4-1-3', name: '积木拼装机器人', count: 2 },
+        ],
+      },
+      {
+        id: 'sc4-2',
+        name: '竞赛机器人',
+        count: 6,
+        children: [
+          { id: 'sc4-2-1', name: '机器人竞赛套件', count: 3 },
+          { id: 'sc4-2-2', name: '足球竞赛机器人', count: 2 },
+          { id: 'sc4-2-3', name: '格斗竞赛机器人', count: 1 },
+        ],
+      },
+      {
+        id: 'sc4-3',
+        name: '高校科研机器人',
+        count: 4,
+        children: [
+          { id: 'sc4-3-1', name: '移动机器人研究平台', count: 2 },
+          { id: 'sc4-3-2', name: '机械臂教学平台', count: 2 },
+        ],
+      },
+    ],
   },
   {
     id: 'sc5',
@@ -450,6 +612,47 @@ export const scenarioCategories: ScenarioCategory[] = [
     description: '搬运、分拣、码垛',
     count: 36,
     color: 'from-cyan-500',
+    children: [
+      {
+        id: 'sc5-1',
+        name: 'AGV/AMR机器人',
+        count: 14,
+        children: [
+          { id: 'sc5-1-1', name: '潜伏式AGV', count: 5 },
+          { id: 'sc5-1-2', name: '背负式AGV', count: 4 },
+          { id: 'sc5-1-3', name: '举升式AGV', count: 3 },
+          { id: 'sc5-1-4', name: '牵引式AGV', count: 2 },
+        ],
+      },
+      {
+        id: 'sc5-2',
+        name: '分拣机器人',
+        count: 10,
+        children: [
+          { id: 'sc5-2-1', name: '快递分拣机器人', count: 4 },
+          { id: 'sc5-2-2', name: '交叉带分拣机', count: 3 },
+          { id: 'sc5-2-3', name: '摆臂分拣机器人', count: 3 },
+        ],
+      },
+      {
+        id: 'sc5-3',
+        name: '码垛机器人',
+        count: 8,
+        children: [
+          { id: 'sc5-3-1', name: '码垛机械手', count: 4 },
+          { id: 'sc5-3-2', name: '层列式码垛机', count: 4 },
+        ],
+      },
+      {
+        id: 'sc5-4',
+        name: '仓储巡检机器人',
+        count: 4,
+        children: [
+          { id: 'sc5-4-1', name: '盘库机器人', count: 2 },
+          { id: 'sc5-4-2', name: '安保巡检机器人', count: 2 },
+        ],
+      },
+    ],
   },
   {
     id: 'sc6',
@@ -458,6 +661,37 @@ export const scenarioCategories: ScenarioCategory[] = [
     description: '巡逻、监控、应急响应',
     count: 22,
     color: 'from-rose-500',
+    children: [
+      {
+        id: 'sc6-1',
+        name: '室内巡检机器人',
+        count: 8,
+        children: [
+          { id: 'sc6-1-1', name: '机房巡检机器人', count: 3 },
+          { id: 'sc6-1-2', name: '变电站巡检机器人', count: 3 },
+          { id: 'sc6-1-3', name: '管廊巡检机器人', count: 2 },
+        ],
+      },
+      {
+        id: 'sc6-2',
+        name: '室外巡逻机器人',
+        count: 10,
+        children: [
+          { id: 'sc6-2-1', name: '园区巡逻机器人', count: 4 },
+          { id: 'sc6-2-2', name: '社区巡逻机器人', count: 3 },
+          { id: 'sc6-2-3', name: '机场巡逻机器人', count: 3 },
+        ],
+      },
+      {
+        id: 'sc6-3',
+        name: '应急救援机器人',
+        count: 4,
+        children: [
+          { id: 'sc6-3-1', name: '消防救援机器人', count: 2 },
+          { id: 'sc6-3-2', name: '排爆机器人', count: 2 },
+        ],
+      },
+    ],
   },
   {
     id: 'sc7',
@@ -466,6 +700,36 @@ export const scenarioCategories: ScenarioCategory[] = [
     description: '采摘、巡检、喷药',
     count: 15,
     color: 'from-lime-500',
+    children: [
+      {
+        id: 'sc7-1',
+        name: '采摘机器人',
+        count: 5,
+        children: [
+          { id: 'sc7-1-1', name: '水果采摘机器人', count: 3 },
+          { id: 'sc7-1-2', name: '蔬菜采摘机器人', count: 2 },
+        ],
+      },
+      {
+        id: 'sc7-2',
+        name: '植保机器人',
+        count: 6,
+        children: [
+          { id: 'sc7-2-1', name: '喷药机器人', count: 3 },
+          { id: 'sc7-2-2', name: '施肥机器人', count: 2 },
+          { id: 'sc7-2-3', name: '除草机器人', count: 1 },
+        ],
+      },
+      {
+        id: 'sc7-3',
+        name: '巡检机器人',
+        count: 4,
+        children: [
+          { id: 'sc7-3-1', name: '农田巡检机器人', count: 2 },
+          { id: 'sc7-3-2', name: '大棚巡检机器人', count: 2 },
+        ],
+      },
+    ],
   },
   {
     id: 'sc8',
@@ -474,5 +738,47 @@ export const scenarioCategories: ScenarioCategory[] = [
     description: '清洁、陪伴、养老',
     count: 28,
     color: 'from-pink-500',
+    children: [
+      {
+        id: 'sc8-1',
+        name: '清洁机器人',
+        count: 12,
+        children: [
+          { id: 'sc8-1-1', name: '扫地机器人', count: 5 },
+          { id: 'sc8-1-2', name: '拖地机器人', count: 3 },
+          { id: 'sc8-1-3', name: '擦窗机器人', count: 2 },
+          { id: 'sc8-1-4', name: '泳池清洁机器人', count: 2 },
+        ],
+      },
+      {
+        id: 'sc8-2',
+        name: '陪伴机器人',
+        count: 8,
+        children: [
+          { id: 'sc8-2-1', name: '儿童陪伴机器人', count: 4 },
+          { id: 'sc8-2-2', name: '老人陪伴机器人', count: 3 },
+          { id: 'sc8-2-3', name: '宠物陪伴机器人', count: 1 },
+        ],
+      },
+      {
+        id: 'sc8-3',
+        name: '厨房机器人',
+        count: 5,
+        children: [
+          { id: 'sc8-3-1', name: '炒菜机器人', count: 2 },
+          { id: 'sc8-3-2', name: '和面机器人', count: 1 },
+          { id: 'sc8-3-3', name: '咖啡机器人', count: 2 },
+        ],
+      },
+      {
+        id: 'sc8-4',
+        name: '管家机器人',
+        count: 3,
+        children: [
+          { id: 'sc8-4-1', name: '智能管家机器人', count: 2 },
+          { id: 'sc8-4-2', name: '取物机器人', count: 1 },
+        ],
+      },
+    ],
   },
 ]

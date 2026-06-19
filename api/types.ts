@@ -98,4 +98,18 @@ export interface ScenarioCategory {
   description: string
   count: number
   color: string
+  children?: ScenarioSubCategory[]
+}
+
+export interface ScenarioSubCategory {
+  id: string
+  name: string
+  count: number
+  children?: ScenarioThirdCategory[]
+}
+
+export interface ScenarioThirdCategory {
+  id: string
+  name: string
+  count: number
 }
