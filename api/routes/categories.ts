@@ -7,6 +7,7 @@ import {
   getAiArticles,
   getScenarioCategories,
   getCategoryProducts,
+  getCategoryProductsById,
 } from '../controllers/categories.controller'
 
 const router = Router()
@@ -17,6 +18,7 @@ router.get('/packages', getPackages)
 router.get('/solutions', getSolutions)
 router.get('/ai-articles', getAiArticles)
 router.get('/scenario-categories', getScenarioCategories)
-router.get('/scenario-categories/:id/products', getCategoryProducts)
+router.get('/scenario-categories/products', getCategoryProducts)
+router.get('/scenario-categories/:id/products', getCategoryProductsById)
 
 export default router

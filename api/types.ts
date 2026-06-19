@@ -9,6 +9,9 @@ export interface Robot {
   image: string
   specs: { label: string; value: string }[]
   subCategoryId?: string
+  category1Id?: string
+  category2Id?: string
+  category3Id?: string
   sales: number
   rating: number
   popularity: number
@@ -25,22 +28,30 @@ export interface CategoryProductGroup {
   products: Robot[]
 }
 
-export interface SearchQuery {
+export type SearchField = 'name' | 'scenario' | 'model'
+
+export type SortType = 'default' | 'price-asc' | 'price-desc' | 'name' | 'sales' | 'popularity' | 'newest' | 'rating'
+
+export interface ProductQueryParams {
+  category1Id?: string
+  category2Id?: string
+  category3Id?: string
   keyword?: string
-  field?: 'name' | 'scenario' | 'model'
-  scenario?: string
-  sort?: 'default' | 'price-asc' | 'price-desc' | 'name' | 'sales' | 'popularity' | 'newest' | 'rating'
+  field?: SearchField
+  sort?: SortType
   minPrice?: number
   maxPrice?: number
   delivery?: string
+}
+
+export interface SearchQuery extends ProductQueryParams {
+  scenario?: string
 }
 
 export interface SearchResult {
   total: number
   list: Robot[]
 }
-
-export type SearchField = 'name' | 'scenario' | 'model'
 
 export interface Manufacturer {
   id: string

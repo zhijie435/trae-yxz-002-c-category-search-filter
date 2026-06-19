@@ -6,7 +6,7 @@ import type {
   AiArticle,
   ScenarioCategory,
   CategoryProductGroup,
-  CategoryFilterParams,
+  ProductQueryParams,
 } from '@/types'
 
 const BASE = '/api'
@@ -58,18 +58,20 @@ export async function fetchScenarioCategories(): Promise<ScenarioCategory[]> {
 }
 
 export async function fetchCategoryProducts(
-  categoryId: string,
-  filters?: CategoryFilterParams,
+  params?: ProductQueryParams,
 ): Promise<CategoryProductGroup[]> {
-  const params = new URLSearchParams()
-  if (filters) {
-    if (filters.sort && filters.sort !== 'default') params.append('sort', filters.sort)
-    if (filters.minPrice !== undefined) params.append('minPrice', String(filters.minPrice))
-    if (filters.maxPrice !== undefined) params.append('maxPrice', String(filters.maxPrice))
-    if (filters.delivery) params.append('delivery', filters.delivery)
+  const queryParams = new URLSearchParams()
+  if (params) {
+    if (params.category1Id) queryParams.append('category1Id', params.category1Id)
+    if (params.category2Id) queryParams.append('category2Id', params.category2Id)
+    if (params.category3Id) queryParams.append('category3Id', params.category3Id)
+    if (params.sort && params.sort !== 'default') queryParams.append('sort', params.sort)
+    if (params.minPrice !== undefined) queryParams.append('minPrice', String(params.minPrice))
+    if (params.maxPrice !== undefined) queryParams.append('maxPrice', String(params.maxPrice))
+    if (params.delivery) queryParams.append('delivery', params.delivery)
   }
-  const queryString = params.toString()
-  const url = `${BASE}/scenario-categories/${categoryId}/products${queryString ? `?${queryString}` : ''}`
+  const queryString = queryParams.toString()
+  const url = `${BASE}/scenario-categories/products${queryString ? `?${queryString}` : ''}`
   const res = await fetch(url)
   if (!res.ok) throw new Error('Failed to fetch category products')
   const json = await res.json()

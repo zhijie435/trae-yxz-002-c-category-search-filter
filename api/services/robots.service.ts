@@ -7,6 +7,20 @@ export class RobotsService {
   search(query: SearchQuery): SearchResult {
     let list = this.repository.findAll()
 
+    if (query.category1Id) {
+      list = list.filter((r) => r.category1Id === query.category1Id)
+    }
+    if (query.category2Id) {
+      list = list.filter((r) => r.category2Id === query.category2Id)
+    }
+    if (query.category3Id) {
+      list = list.filter((r) => r.category3Id === query.category3Id)
+    }
+
+    if (query.scenario) {
+      list = list.filter((r) => r.scenario === query.scenario)
+    }
+
     if (query.keyword && query.keyword.trim()) {
       const keyword = query.keyword.trim().toLowerCase()
       const searchField = query.field
@@ -23,10 +37,6 @@ export class RobotsService {
             r.model.toLowerCase().includes(keyword),
         )
       }
-    }
-
-    if (query.scenario) {
-      list = list.filter((r) => r.scenario === query.scenario)
     }
 
     if (query.minPrice !== undefined) {

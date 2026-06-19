@@ -6,7 +6,7 @@ import type {
   AiArticle,
   ScenarioCategory,
   CategoryProductGroup,
-  SearchQuery,
+  ProductQueryParams,
   Robot,
 } from '../types'
 import {
@@ -47,16 +47,79 @@ class CategoriesService {
   }
 
   getCategoryProducts(
-    categoryId: string,
-    filters?: Partial<SearchQuery>,
+    params: ProductQueryParams = {},
   ): CategoryProductGroup[] {
-    const category = scenarioCategories.find((c) => c.id === categoryId)
-    if (!category || !category.children) return []
-    return category.children.map((sub) => {
-      let products = robots.filter((r) => r.subCategoryId === sub.id)
-      if (filters) {
-        products = this.applyFilters(products, filters)
+    const category1Id = params.category1Id
+    const category2Id = params.category2Id
+    const category3Id = params.category3Id
+
+    if (category3Id) {
+      const thirdCategory = this.findThirdCategory(category3Id)
+      if (!thirdCategory) return []
+      let products = robots.filter((r) => r.category3Id === category3Id)
+      products = this.applyFilters(products, params)
+      return [
+        {
+          id: thirdCategory.id,
+          name: thirdCategory.name,
+          count: products.length,
+          products,
+        },
+      ]
+    }
+
+    if (category2Id) {
+      const subCategory = this.findSubCategory(category2Id)
+      if (!subCategory) return []
+      let products = robots.filter((r) => r.category2Id === category2Id)
+      products = this.applyFilters(products, params)
+      if (subCategory.children && subCategory.children.length > 0) {
+        return subCategory.children.map((third) => {
+          const thirdProducts = products.filter((r) => r.category3Id === third.id)
+          return {
+            id: third.id,
+            name: third.name,
+            count: thirdProducts.length,
+            products: thirdProducts,
+          }
+        })
       }
+      return [
+        {
+          id: subCategory.id,
+          name: subCategory.name,
+          count: products.length,
+          products,
+        },
+      ]
+    }
+
+    if (category1Id) {
+      const category = scenarioCategories.find((c) => c.id === category1Id)
+      if (!category || !category.children) return []
+      return category.children.map((sub) => {
+        let products = robots.filter((r) => r.category2Id === sub.id)
+        products = this.applyFilters(products, params)
+        return {
+          id: sub.id,
+          name: sub.name,
+          count: products.length,
+          products,
+        }
+      })
+    }
+
+    const allSubCategories: { id: string; name: string; category1Id: string }[] = []
+    for (const cat of scenarioCategories) {
+      if (cat.children) {
+        for (const sub of cat.children) {
+          allSubCategories.push({ id: sub.id, name: sub.name, category1Id: cat.id })
+        }
+      }
+    }
+    return allSubCategories.map((sub) => {
+      let products = robots.filter((r) => r.category2Id === sub.id)
+      products = this.applyFilters(products, params)
       return {
         id: sub.id,
         name: sub.name,
@@ -66,7 +129,31 @@ class CategoriesService {
     })
   }
 
-  private applyFilters(list: Robot[], filters: Partial<SearchQuery>): Robot[] {
+  private findSubCategory(subId: string) {
+    for (const cat of scenarioCategories) {
+      if (cat.children) {
+        const sub = cat.children.find((s) => s.id === subId)
+        if (sub) return sub
+      }
+    }
+    return null
+  }
+
+  private findThirdCategory(thirdId: string) {
+    for (const cat of scenarioCategories) {
+      if (cat.children) {
+        for (const sub of cat.children) {
+          if (sub.children) {
+            const third = sub.children.find((t) => t.id === thirdId)
+            if (third) return third
+          }
+        }
+      }
+    }
+    return null
+  }
+
+  private applyFilters(list: Robot[], filters: ProductQueryParams): Robot[] {
     let result = list
     if (filters.minPrice !== undefined) {
       result = result.filter((r) => r.price >= filters.minPrice!)

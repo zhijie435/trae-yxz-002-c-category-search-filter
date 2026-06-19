@@ -14,19 +14,19 @@
             :key="cat.id"
             :class="[
               'relative px-4 py-2.5 cursor-pointer transition-colors group',
-              activeIndex === index
+              activeCategory1Id === cat.id
                 ? 'bg-primary-50 border-l-2 border-primary-600'
                 : 'hover:bg-gray-50 border-l-2 border-transparent',
             ]"
-            @mouseenter="handleCategoryHover(index)"
-            @click="handleCategoryClick(index)"
+            @mouseenter="handleCategory1Hover(cat.id)"
+            @click="handleCategory1Click(cat.id)"
           >
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2.5">
                 <div
                   :class="[
                     'w-8 h-8 rounded-lg flex items-center justify-center transition-colors',
-                    activeIndex === index
+                    activeCategory1Id === cat.id
                       ? colorMap[cat.color]?.iconBgActive || 'bg-primary-100'
                       : 'bg-gray-50 group-hover:bg-gray-100',
                   ]"
@@ -35,7 +35,7 @@
                     :is="iconMap[cat.icon]"
                     :class="[
                       'w-4 h-4 transition-colors',
-                      activeIndex === index
+                      activeCategory1Id === cat.id
                         ? colorMap[cat.color]?.iconTextActive || 'text-primary-600'
                         : 'text-gray-500 group-hover:text-gray-700',
                     ]"
@@ -45,7 +45,7 @@
                   <div
                     :class="[
                       'text-sm font-medium transition-colors',
-                      activeIndex === index ? 'text-primary-700' : 'text-ink',
+                      activeCategory1Id === cat.id ? 'text-primary-700' : 'text-ink',
                     ]"
                   >
                     {{ cat.name }}
@@ -56,7 +56,7 @@
               <ChevronRight
                 :class="[
                   'w-4 h-4 flex-shrink-0 transition-colors',
-                  activeIndex === index ? 'text-primary-500' : 'text-gray-300',
+                  activeCategory1Id === cat.id ? 'text-primary-500' : 'text-gray-300',
                 ]"
               />
             </div>
@@ -90,16 +90,16 @@
           <div
             class="flex items-center gap-2 mb-2 px-2 py-1.5 rounded-lg cursor-pointer transition-colors"
             :class="[
-              activeSubCategoryId === sub.id
+              activeCategory2Id === sub.id
                 ? 'bg-primary-50'
                 : 'hover:bg-gray-50',
             ]"
-            @click="handleSubCategoryClick(sub.id)"
+            @click="handleCategory2Click(sub.id)"
           >
             <div
               :class="[
                 'w-1 h-4 rounded-full flex-shrink-0',
-                activeSubCategoryId === sub.id
+                activeCategory2Id === sub.id
                   ? colorMap[activeCategory.color]?.iconBgActive || 'bg-primary-500'
                   : 'bg-gray-200',
               ]"
@@ -107,7 +107,7 @@
             <h4
               :class="[
                 'text-sm font-bold transition-colors',
-                activeSubCategoryId === sub.id
+                activeCategory2Id === sub.id
                   ? 'text-primary-700'
                   : 'text-ink',
               ]"
@@ -134,10 +134,16 @@
           <button
             v-for="third in activeSubCategory.children"
             :key="third.id"
-            class="px-3 py-1.5 text-xs text-gray-600 bg-gray-50 hover:bg-primary-50 hover:text-primary-600 rounded-lg transition-colors"
+            :class="[
+              'px-3 py-1.5 text-xs rounded-lg transition-colors',
+              activeCategory3Id === third.id
+                ? 'bg-primary-600 text-white shadow-sm'
+                : 'text-gray-600 bg-gray-50 hover:bg-primary-50 hover:text-primary-600',
+            ]"
+            @click="handleCategory3Click(third.id)"
           >
             {{ third.name }}
-            <span class="text-gray-300 ml-1">({{ third.count }})</span>
+            <span :class="activeCategory3Id === third.id ? 'text-white/70' : 'text-gray-300'" class="ml-1">({{ third.count }})</span>
           </button>
         </div>
       </div>
@@ -147,7 +153,9 @@
       <div class="flex items-center gap-2 mb-4">
         <Boxes class="w-5 h-5 text-primary-600" />
         <h3 class="text-base font-bold text-ink">商品展示</h3>
-        <span class="text-xs text-gray-400">按二级分类分组</span>
+        <span class="text-xs text-gray-400">
+          {{ activeCategory3Id ? '按三级分类展示' : activeCategory2Id ? '按三级分类分组' : '按二级分类分组' }}
+        </span>
       </div>
 
       <div class="mb-4 bg-gray-50 rounded-xl p-4 space-y-4">
@@ -159,7 +167,7 @@
               :key="opt.value"
               :class="[
                 'flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
-                filters.sort === opt.value
+                queryParams.sort === opt.value
                   ? 'bg-primary-600 text-white shadow-sm'
                   : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200',
               ]"
@@ -197,7 +205,7 @@
             <button
               :class="[
                 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
-                filters.delivery === undefined
+                queryParams.delivery === undefined
                   ? 'bg-primary-600 text-white shadow-sm'
                   : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200',
               ]"
@@ -210,7 +218,7 @@
               :key="opt.value"
               :class="[
                 'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
-                filters.delivery === opt.value
+                queryParams.delivery === opt.value
                   ? 'bg-primary-600 text-white shadow-sm'
                   : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200',
               ]"
@@ -288,7 +296,7 @@ import {
 } from 'lucide-vue-next'
 import { fetchScenarioCategories, fetchCategoryProducts } from '@/api/categories'
 import RobotCard from '@/components/RobotCard.vue'
-import type { ScenarioCategory, CategoryProductGroup, CategoryFilterParams } from '@/types'
+import type { ScenarioCategory, CategoryProductGroup, ProductQueryParams, SortType } from '@/types'
 
 const iconMap: Record<string, any> = {
   Factory,
@@ -340,21 +348,32 @@ const colorMap: Record<
 }
 
 const scenarioCategories = ref<ScenarioCategory[]>([])
-const activeIndex = ref(0)
-const activeSubCategoryId = ref<string | null>(null)
+const activeCategory1Id = ref<string>('')
+const activeCategory2Id = ref<string>('')
+const activeCategory3Id = ref<string>('')
 const productGroups = ref<CategoryProductGroup[]>([])
 const productsLoading = ref(false)
 let productRequestId = 0
 
+const queryParams = reactive<ProductQueryParams>({
+  category1Id: undefined,
+  category2Id: undefined,
+  category3Id: undefined,
+  sort: 'default',
+  minPrice: undefined,
+  maxPrice: undefined,
+  delivery: undefined,
+})
+
 const activeCategory = computed(() => {
-  if (scenarioCategories.value.length === 0) return null
-  return scenarioCategories.value[activeIndex.value]
+  if (!activeCategory1Id.value) return null
+  return scenarioCategories.value.find((c) => c.id === activeCategory1Id.value) || null
 })
 
 const activeSubCategory = computed(() => {
   const cat = activeCategory.value
-  if (!cat || !cat.children || !activeSubCategoryId.value) return null
-  return cat.children.find((sub) => sub.id === activeSubCategoryId.value) || null
+  if (!cat || !cat.children || !activeCategory2Id.value) return null
+  return cat.children.find((sub) => sub.id === activeCategory2Id.value) || null
 })
 
 const activeAccent = computed(
@@ -363,7 +382,7 @@ const activeAccent = computed(
 
 interface SortOption {
   label: string
-  value: CategoryFilterParams['sort']
+  value: SortType
   icon: any
 }
 
@@ -399,68 +418,88 @@ const priceRanges = [
   { label: '20万以上', min: 200000, max: undefined },
 ]
 
-const filters = reactive<CategoryFilterParams>({
-  sort: 'default',
-  minPrice: undefined,
-  maxPrice: undefined,
-  delivery: undefined,
-})
-
 const activePriceRange = ref(0)
 
-function handleSortChange(value: CategoryFilterParams['sort']) {
-  filters.sort = value
+function handleSortChange(value: SortType) {
+  queryParams.sort = value
 }
 
 function handlePriceSelect(index: number) {
   activePriceRange.value = index
-  filters.minPrice = priceRanges[index].min
-  filters.maxPrice = priceRanges[index].max
+  queryParams.minPrice = priceRanges[index].min
+  queryParams.maxPrice = priceRanges[index].max
 }
 
 function handleDeliverySelect(value: string | undefined) {
-  filters.delivery = value
+  queryParams.delivery = value
 }
 
 function resetFilters() {
-  filters.sort = 'default'
-  filters.minPrice = undefined
-  filters.maxPrice = undefined
-  filters.delivery = undefined
+  queryParams.sort = 'default'
+  queryParams.minPrice = undefined
+  queryParams.maxPrice = undefined
+  queryParams.delivery = undefined
   activePriceRange.value = 0
 }
 
-function handleCategoryHover(index: number) {
-  activeIndex.value = index
-  const cat = scenarioCategories.value[index]
+function handleCategory1Hover(categoryId: string) {
+  if (activeCategory1Id.value === categoryId) return
+  activeCategory1Id.value = categoryId
+  const cat = scenarioCategories.value.find((c) => c.id === categoryId)
   if (cat && cat.children && cat.children.length > 0) {
-    activeSubCategoryId.value = cat.children[0].id
+    activeCategory2Id.value = cat.children[0].id
+    activeCategory3Id.value = ''
   } else {
-    activeSubCategoryId.value = null
+    activeCategory2Id.value = ''
+    activeCategory3Id.value = ''
   }
 }
 
-function handleCategoryClick(index: number) {
+function handleCategory1Click(categoryId: string) {
   resetFilters()
-  activeIndex.value = index
-  const cat = scenarioCategories.value[index]
+  activeCategory1Id.value = categoryId
+  queryParams.category1Id = categoryId
+  queryParams.category2Id = undefined
+  queryParams.category3Id = undefined
+  const cat = scenarioCategories.value.find((c) => c.id === categoryId)
   if (cat && cat.children && cat.children.length > 0) {
-    activeSubCategoryId.value = cat.children[0].id
+    activeCategory2Id.value = cat.children[0].id
+    activeCategory3Id.value = ''
   } else {
-    activeSubCategoryId.value = null
+    activeCategory2Id.value = ''
+    activeCategory3Id.value = ''
   }
 }
 
-function handleSubCategoryClick(subId: string) {
-  activeSubCategoryId.value = activeSubCategoryId.value === subId ? null : subId
+function handleCategory2Click(subId: string) {
+  activeCategory2Id.value = activeCategory2Id.value === subId ? '' : subId
+  if (activeCategory2Id.value) {
+    queryParams.category2Id = subId
+    queryParams.category3Id = undefined
+    activeCategory3Id.value = ''
+  } else {
+    queryParams.category2Id = undefined
+    queryParams.category3Id = undefined
+    activeCategory3Id.value = ''
+  }
+}
+
+function handleCategory3Click(thirdId: string) {
+  activeCategory3Id.value = activeCategory3Id.value === thirdId ? '' : thirdId
+  queryParams.category3Id = activeCategory3Id.value || undefined
 }
 
 async function loadScenarioCategories() {
   try {
     scenarioCategories.value = await fetchScenarioCategories()
     const firstCat = scenarioCategories.value[0]
-    if (firstCat && firstCat.children && firstCat.children.length > 0) {
-      activeSubCategoryId.value = firstCat.children[0].id
+    if (firstCat) {
+      activeCategory1Id.value = firstCat.id
+      queryParams.category1Id = firstCat.id
+      if (firstCat.children && firstCat.children.length > 0) {
+        activeCategory2Id.value = firstCat.children[0].id
+        queryParams.category2Id = firstCat.children[0].id
+      }
     }
   } catch (e) {
     console.error('Failed to load scenario categories:', e)
@@ -468,17 +507,19 @@ async function loadScenarioCategories() {
 }
 
 async function loadCategoryProducts() {
-  const cat = activeCategory.value
-  if (!cat) return
   const requestId = ++productRequestId
   productsLoading.value = true
   try {
-    const data = await fetchCategoryProducts(cat.id, {
-      sort: filters.sort,
-      minPrice: filters.minPrice,
-      maxPrice: filters.maxPrice,
-      delivery: filters.delivery,
-    })
+    const params: ProductQueryParams = {
+      category1Id: queryParams.category1Id,
+      category2Id: queryParams.category2Id,
+      category3Id: queryParams.category3Id,
+      sort: queryParams.sort,
+      minPrice: queryParams.minPrice,
+      maxPrice: queryParams.maxPrice,
+      delivery: queryParams.delivery,
+    }
+    const data = await fetchCategoryProducts(params)
     if (requestId !== productRequestId) return
     productGroups.value = data
   } catch (e) {
@@ -492,17 +533,15 @@ async function loadCategoryProducts() {
   }
 }
 
-watch(activeCategory, () => {
-  activeSubCategoryId.value = null
-  loadCategoryProducts()
-})
-
 watch(
   () => ({
-    sort: filters.sort,
-    minPrice: filters.minPrice,
-    maxPrice: filters.maxPrice,
-    delivery: filters.delivery,
+    category1Id: queryParams.category1Id,
+    category2Id: queryParams.category2Id,
+    category3Id: queryParams.category3Id,
+    sort: queryParams.sort,
+    minPrice: queryParams.minPrice,
+    maxPrice: queryParams.maxPrice,
+    delivery: queryParams.delivery,
   }),
   () => {
     loadCategoryProducts()

@@ -135,14 +135,14 @@ import AccessorySection from '@/components/AccessorySection.vue'
 import PackageSection from '@/components/PackageSection.vue'
 import SolutionSection from '@/components/SolutionSection.vue'
 import { fetchRobots, fetchScenarios } from '@/api/robots'
-import type { Robot, SearchField, SearchQuery } from '@/types'
+import type { Robot, SearchField, SearchQuery, SortType } from '@/types'
 
 const robotList = ref<Robot[]>([])
 const total = ref(0)
 const loading = ref(false)
 const scenarios = ref<string[]>([])
 const selectedScenario = ref('')
-const sortBy = ref<SearchQuery['sort']>('default')
+const sortBy = ref<SortType>('default')
 const currentKeyword = ref('')
 const currentField = ref<SearchField>('name')
 
@@ -157,12 +157,13 @@ async function loadScenarios() {
 async function loadRobots() {
   loading.value = true
   try {
-    const result = await fetchRobots({
+    const params: SearchQuery = {
       keyword: currentKeyword.value || undefined,
       field: currentField.value,
       scenario: selectedScenario.value || undefined,
       sort: sortBy.value,
-    })
+    }
+    const result = await fetchRobots(params)
     robotList.value = result.list
     total.value = result.total
   } catch (e) {
