@@ -81,32 +81,64 @@
         <p class="text-xs text-gray-500">{{ activeCategory.description }}</p>
       </div>
 
-      <div class="space-y-5">
+      <div class="space-y-3">
         <div
           v-for="sub in activeCategory.children"
           :key="sub.id"
           class="group"
         >
-          <div class="flex items-center gap-2 mb-2">
+          <div
+            class="flex items-center gap-2 mb-2 px-2 py-1.5 rounded-lg cursor-pointer transition-colors"
+            :class="[
+              activeSubCategoryId === sub.id
+                ? 'bg-primary-50'
+                : 'hover:bg-gray-50',
+            ]"
+            @click="handleSubCategoryClick(sub.id)"
+          >
             <div
               :class="[
-                'w-1 h-4 rounded-full',
-                colorMap[activeCategory.color]?.iconBgActive || 'bg-primary-500',
+                'w-1 h-4 rounded-full flex-shrink-0',
+                activeSubCategoryId === sub.id
+                  ? colorMap[activeCategory.color]?.iconBgActive || 'bg-primary-500'
+                  : 'bg-gray-200',
               ]"
             />
-            <h4 class="text-sm font-bold text-ink">{{ sub.name }}</h4>
+            <h4
+              :class="[
+                'text-sm font-bold transition-colors',
+                activeSubCategoryId === sub.id
+                  ? 'text-primary-700'
+                  : 'text-ink',
+              ]"
+            >
+              {{ sub.name }}
+            </h4>
             <span class="text-[11px] text-gray-400">{{ sub.count }}款</span>
           </div>
-          <div v-if="sub.children && sub.children.length > 0" class="flex flex-wrap gap-2 pl-3">
-            <button
-              v-for="third in sub.children"
-              :key="third.id"
-              class="px-3 py-1.5 text-xs text-gray-600 bg-gray-50 hover:bg-primary-50 hover:text-primary-600 rounded-lg transition-colors"
-            >
-              {{ third.name }}
-              <span class="text-gray-300 ml-1">({{ third.count }})</span>
-            </button>
-          </div>
+        </div>
+      </div>
+
+      <div
+        v-if="activeSubCategory && activeSubCategory.children && activeSubCategory.children.length > 0"
+        class="mt-4 pt-4 border-t border-gray-100"
+      >
+        <div class="flex items-center gap-2 mb-3">
+          <component
+            :is="iconMap[activeCategory.icon]"
+            :class="['w-4 h-4', colorMap[activeCategory.color]?.iconTextActive || 'text-primary-600']"
+          />
+          <span class="text-xs font-medium text-gray-500">{{ activeSubCategory.name }} - 细分分类</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-for="third in activeSubCategory.children"
+            :key="third.id"
+            class="px-3 py-1.5 text-xs text-gray-600 bg-gray-50 hover:bg-primary-50 hover:text-primary-600 rounded-lg transition-colors"
+          >
+            {{ third.name }}
+            <span class="text-gray-300 ml-1">({{ third.count }})</span>
+          </button>
         </div>
       </div>
     </div>
@@ -309,6 +341,7 @@ const colorMap: Record<
 
 const scenarioCategories = ref<ScenarioCategory[]>([])
 const activeIndex = ref(0)
+const activeSubCategoryId = ref<string | null>(null)
 const productGroups = ref<CategoryProductGroup[]>([])
 const productsLoading = ref(false)
 let productRequestId = 0
@@ -316,6 +349,12 @@ let productRequestId = 0
 const activeCategory = computed(() => {
   if (scenarioCategories.value.length === 0) return null
   return scenarioCategories.value[activeIndex.value]
+})
+
+const activeSubCategory = computed(() => {
+  const cat = activeCategory.value
+  if (!cat || !cat.children || !activeSubCategoryId.value) return null
+  return cat.children.find((sub) => sub.id === activeSubCategoryId.value) || null
 })
 
 const activeAccent = computed(
@@ -393,16 +432,36 @@ function resetFilters() {
 
 function handleCategoryHover(index: number) {
   activeIndex.value = index
+  const cat = scenarioCategories.value[index]
+  if (cat && cat.children && cat.children.length > 0) {
+    activeSubCategoryId.value = cat.children[0].id
+  } else {
+    activeSubCategoryId.value = null
+  }
 }
 
 function handleCategoryClick(index: number) {
   resetFilters()
   activeIndex.value = index
+  const cat = scenarioCategories.value[index]
+  if (cat && cat.children && cat.children.length > 0) {
+    activeSubCategoryId.value = cat.children[0].id
+  } else {
+    activeSubCategoryId.value = null
+  }
+}
+
+function handleSubCategoryClick(subId: string) {
+  activeSubCategoryId.value = activeSubCategoryId.value === subId ? null : subId
 }
 
 async function loadScenarioCategories() {
   try {
     scenarioCategories.value = await fetchScenarioCategories()
+    const firstCat = scenarioCategories.value[0]
+    if (firstCat && firstCat.children && firstCat.children.length > 0) {
+      activeSubCategoryId.value = firstCat.children[0].id
+    }
   } catch (e) {
     console.error('Failed to load scenario categories:', e)
   }
@@ -434,6 +493,7 @@ async function loadCategoryProducts() {
 }
 
 watch(activeCategory, () => {
+  activeSubCategoryId.value = null
   loadCategoryProducts()
 })
 
