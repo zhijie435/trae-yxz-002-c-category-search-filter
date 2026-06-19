@@ -5,9 +5,12 @@ import type { SearchField, SearchQuery } from '../types'
 const service = new RobotsService()
 
 function parseQuery(req: Request): SearchQuery {
-  const { keyword, field, scenario, sort } = req.query
+  const { keyword, field, scenario, sort, minPrice, maxPrice, delivery } = req.query
   const validFields: SearchField[] = ['name', 'scenario', 'model']
-  const validSorts = ['default', 'price-asc', 'price-desc', 'name'] as const
+  const validSorts = [
+    'default', 'price-asc', 'price-desc', 'name',
+    'sales', 'popularity', 'newest', 'rating',
+  ] as const
 
   return {
     keyword: typeof keyword === 'string' ? keyword : undefined,
@@ -21,6 +24,9 @@ function parseQuery(req: Request): SearchQuery {
       validSorts.includes(sort as (typeof validSorts)[number])
         ? (sort as SearchQuery['sort'])
         : 'default',
+    minPrice: minPrice !== undefined ? Number(minPrice) || undefined : undefined,
+    maxPrice: maxPrice !== undefined ? Number(maxPrice) || undefined : undefined,
+    delivery: typeof delivery === 'string' ? delivery : undefined,
   }
 }
 

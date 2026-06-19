@@ -6,6 +6,8 @@ import type {
   AiArticle,
   ScenarioCategory,
   CategoryProductGroup,
+  SearchQuery,
+  Robot,
 } from '../types'
 import {
   manufacturers,
@@ -44,15 +46,58 @@ class CategoriesService {
     return scenarioCategories
   }
 
-  getCategoryProducts(categoryId: string): CategoryProductGroup[] {
+  getCategoryProducts(
+    categoryId: string,
+    filters?: Partial<SearchQuery>,
+  ): CategoryProductGroup[] {
     const category = scenarioCategories.find((c) => c.id === categoryId)
     if (!category || !category.children) return []
-    return category.children.map((sub) => ({
-      id: sub.id,
-      name: sub.name,
-      count: sub.count,
-      products: robots.filter((r) => r.subCategoryId === sub.id),
-    }))
+    return category.children.map((sub) => {
+      let products = robots.filter((r) => r.subCategoryId === sub.id)
+      if (filters) {
+        products = this.applyFilters(products, filters)
+      }
+      return {
+        id: sub.id,
+        name: sub.name,
+        count: products.length,
+        products,
+      }
+    })
+  }
+
+  private applyFilters(list: Robot[], filters: Partial<SearchQuery>): Robot[] {
+    let result = list
+    if (filters.minPrice !== undefined) {
+      result = result.filter((r) => r.price >= filters.minPrice!)
+    }
+    if (filters.maxPrice !== undefined) {
+      result = result.filter((r) => r.price <= filters.maxPrice!)
+    }
+    if (filters.delivery) {
+      result = result.filter((r) => r.deliveryMethod.includes(filters.delivery!))
+    }
+    switch (filters.sort) {
+      case 'price-asc':
+        result = [...result].sort((a, b) => a.price - b.price)
+        break
+      case 'price-desc':
+        result = [...result].sort((a, b) => b.price - a.price)
+        break
+      case 'sales':
+        result = [...result].sort((a, b) => b.sales - a.sales)
+        break
+      case 'popularity':
+        result = [...result].sort((a, b) => b.popularity - a.popularity)
+        break
+      case 'newest':
+        result = [...result].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+        break
+      case 'rating':
+        result = [...result].sort((a, b) => b.rating - a.rating)
+        break
+    }
+    return result
   }
 }
 

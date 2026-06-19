@@ -9,6 +9,11 @@ export interface Robot {
   image: string
   specs: { label: string; value: string }[]
   subCategoryId?: string
+  sales: number
+  rating: number
+  popularity: number
+  createdAt: string
+  deliveryMethod: string[]
 }
 
 export type SearchField = 'name' | 'scenario' | 'model'
@@ -17,7 +22,17 @@ export interface SearchQuery {
   keyword?: string
   field?: SearchField
   scenario?: string
-  sort?: 'default' | 'price-asc' | 'price-desc' | 'name'
+  sort?: 'default' | 'price-asc' | 'price-desc' | 'name' | 'sales' | 'popularity' | 'newest' | 'rating'
+  minPrice?: number
+  maxPrice?: number
+  delivery?: string
+}
+
+export interface CategoryFilterParams {
+  sort?: SearchQuery['sort']
+  minPrice?: number
+  maxPrice?: number
+  delivery?: string
 }
 
 export interface SearchResult {

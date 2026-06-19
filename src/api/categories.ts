@@ -6,6 +6,7 @@ import type {
   AiArticle,
   ScenarioCategory,
   CategoryProductGroup,
+  CategoryFilterParams,
 } from '@/types'
 
 const BASE = '/api'
@@ -58,8 +59,18 @@ export async function fetchScenarioCategories(): Promise<ScenarioCategory[]> {
 
 export async function fetchCategoryProducts(
   categoryId: string,
+  filters?: CategoryFilterParams,
 ): Promise<CategoryProductGroup[]> {
-  const res = await fetch(`${BASE}/scenario-categories/${categoryId}/products`)
+  const params = new URLSearchParams()
+  if (filters) {
+    if (filters.sort && filters.sort !== 'default') params.append('sort', filters.sort)
+    if (filters.minPrice !== undefined) params.append('minPrice', String(filters.minPrice))
+    if (filters.maxPrice !== undefined) params.append('maxPrice', String(filters.maxPrice))
+    if (filters.delivery) params.append('delivery', filters.delivery)
+  }
+  const queryString = params.toString()
+  const url = `${BASE}/scenario-categories/${categoryId}/products${queryString ? `?${queryString}` : ''}`
+  const res = await fetch(url)
   if (!res.ok) throw new Error('Failed to fetch category products')
   const json = await res.json()
   return json.data

@@ -118,6 +118,86 @@
         <span class="text-xs text-gray-400">按二级分类分组</span>
       </div>
 
+      <div class="mb-4 bg-gray-50 rounded-xl p-4 space-y-4">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-medium text-gray-500 whitespace-nowrap w-12">排序</span>
+          <div class="flex flex-wrap gap-2">
+            <button
+              v-for="opt in sortOptions"
+              :key="opt.value"
+              :class="[
+                'flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                filters.sort === opt.value
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200',
+              ]"
+              @click="handleSortChange(opt.value)"
+            >
+              <component :is="opt.icon" class="w-3.5 h-3.5" />
+              {{ opt.label }}
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-medium text-gray-500 whitespace-nowrap w-12">价格</span>
+          <div class="flex flex-wrap gap-2">
+            <button
+              v-for="(range, idx) in priceRanges"
+              :key="idx"
+              :class="[
+                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                activePriceRange === idx
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200',
+              ]"
+              @click="handlePriceSelect(idx)"
+            >
+              {{ range.label }}
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-medium text-gray-500 whitespace-nowrap w-12">
+            <Truck class="w-3.5 h-3.5 inline mr-1" />
+            配送
+          </span>
+          <div class="flex flex-wrap gap-2">
+            <button
+              :class="[
+                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                filters.delivery === undefined
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200',
+              ]"
+              @click="handleDeliverySelect(undefined)"
+            >
+              全部
+            </button>
+            <button
+              v-for="opt in deliveryOptions"
+              :key="opt.value"
+              :class="[
+                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all',
+                filters.delivery === opt.value
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200',
+              ]"
+              @click="handleDeliverySelect(opt.value)"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-end pt-2 border-t border-gray-200">
+          <button
+            class="text-xs text-gray-500 hover:text-primary-600 transition-colors"
+            @click="resetFilters"
+          >
+            重置筛选
+          </button>
+        </div>
+      </div>
+
       <div v-if="productsLoading" class="py-20 text-center text-sm text-gray-400">
         加载中...
       </div>
@@ -153,7 +233,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, reactive } from 'vue'
 import {
   LayoutGrid,
   ChevronRight,
@@ -166,10 +246,17 @@ import {
   ShieldCheck,
   Sprout,
   Home,
+  Star,
+  TrendingUp,
+  Zap,
+  Clock,
+  ThumbsUp,
+  Truck,
+  DollarSign,
 } from 'lucide-vue-next'
 import { fetchScenarioCategories, fetchCategoryProducts } from '@/api/categories'
 import RobotCard from '@/components/RobotCard.vue'
-import type { ScenarioCategory, CategoryProductGroup } from '@/types'
+import type { ScenarioCategory, CategoryProductGroup, CategoryFilterParams } from '@/types'
 
 const iconMap: Record<string, any> = {
   Factory,
@@ -235,11 +322,81 @@ const activeAccent = computed(
   () => colorMap[activeCategory.value?.color ?? '']?.iconBgActive || 'bg-primary-500',
 )
 
+interface SortOption {
+  label: string
+  value: CategoryFilterParams['sort']
+  icon: any
+}
+
+const sortOptions: SortOption[] = [
+  { label: '默认', value: 'default', icon: Star },
+  { label: '销量', value: 'sales', icon: TrendingUp },
+  { label: '人气', value: 'popularity', icon: Zap },
+  { label: '最新', value: 'newest', icon: Clock },
+  { label: '好评', value: 'rating', icon: ThumbsUp },
+  { label: '价格↓', value: 'price-desc', icon: DollarSign },
+  { label: '价格↑', value: 'price-asc', icon: DollarSign },
+]
+
+const deliveryOptions = [
+  { label: '送货上门', value: '送货上门' },
+  { label: '上门安装', value: '上门安装' },
+  { label: '全国联保', value: '全国联保' },
+  { label: '专业培训', value: '专业培训' },
+  { label: '驻场调试', value: '驻场调试' },
+  { label: '快递包邮', value: '快递包邮' },
+  { label: '一年保修', value: '一年保修' },
+  { label: '三年保修', value: '三年保修' },
+  { label: '7天无理由', value: '7天无理由' },
+  { label: '技术支持', value: '技术支持' },
+]
+
+const priceRanges = [
+  { label: '全部', min: undefined, max: undefined },
+  { label: '1万以下', min: undefined, max: 10000 },
+  { label: '1万-5万', min: 10000, max: 50000 },
+  { label: '5万-10万', min: 50000, max: 100000 },
+  { label: '10万-20万', min: 100000, max: 200000 },
+  { label: '20万以上', min: 200000, max: undefined },
+]
+
+const filters = reactive<CategoryFilterParams>({
+  sort: 'default',
+  minPrice: undefined,
+  maxPrice: undefined,
+  delivery: undefined,
+})
+
+const activePriceRange = ref(0)
+
+function handleSortChange(value: CategoryFilterParams['sort']) {
+  filters.sort = value
+}
+
+function handlePriceSelect(index: number) {
+  activePriceRange.value = index
+  filters.minPrice = priceRanges[index].min
+  filters.maxPrice = priceRanges[index].max
+}
+
+function handleDeliverySelect(value: string | undefined) {
+  filters.delivery = value
+}
+
+function resetFilters() {
+  filters.sort = 'default'
+  filters.minPrice = undefined
+  filters.maxPrice = undefined
+  filters.delivery = undefined
+  activePriceRange.value = 0
+}
+
 function handleCategoryHover(index: number) {
   activeIndex.value = index
 }
 
 function handleCategoryClick(index: number) {
+  resetFilters()
   activeIndex.value = index
 }
 
@@ -257,7 +414,12 @@ async function loadCategoryProducts() {
   const requestId = ++productRequestId
   productsLoading.value = true
   try {
-    const data = await fetchCategoryProducts(cat.id)
+    const data = await fetchCategoryProducts(cat.id, {
+      sort: filters.sort,
+      minPrice: filters.minPrice,
+      maxPrice: filters.maxPrice,
+      delivery: filters.delivery,
+    })
     if (requestId !== productRequestId) return
     productGroups.value = data
   } catch (e) {
@@ -274,6 +436,13 @@ async function loadCategoryProducts() {
 watch(activeCategory, () => {
   loadCategoryProducts()
 })
+
+watch(
+  () => [filters.sort, filters.minPrice, filters.maxPrice, filters.delivery],
+  () => {
+    loadCategoryProducts()
+  },
+)
 
 onMounted(() => {
   loadScenarioCategories()

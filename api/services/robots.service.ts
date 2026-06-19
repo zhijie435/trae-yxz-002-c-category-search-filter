@@ -29,6 +29,16 @@ export class RobotsService {
       list = list.filter((r) => r.scenario === query.scenario)
     }
 
+    if (query.minPrice !== undefined) {
+      list = list.filter((r) => r.price >= query.minPrice!)
+    }
+    if (query.maxPrice !== undefined) {
+      list = list.filter((r) => r.price <= query.maxPrice!)
+    }
+    if (query.delivery) {
+      list = list.filter((r) => r.deliveryMethod.includes(query.delivery!))
+    }
+
     switch (query.sort) {
       case 'price-asc':
         list = [...list].sort((a, b) => a.price - b.price)
@@ -38,6 +48,18 @@ export class RobotsService {
         break
       case 'name':
         list = [...list].sort((a, b) => a.name.localeCompare(b.name))
+        break
+      case 'sales':
+        list = [...list].sort((a, b) => b.sales - a.sales)
+        break
+      case 'popularity':
+        list = [...list].sort((a, b) => b.popularity - a.popularity)
+        break
+      case 'newest':
+        list = [...list].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+        break
+      case 'rating':
+        list = [...list].sort((a, b) => b.rating - a.rating)
         break
     }
 

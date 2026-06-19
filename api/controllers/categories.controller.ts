@@ -52,7 +52,21 @@ export function getScenarioCategories(req: Request, res: Response): void {
 }
 
 export function getCategoryProducts(req: Request, res: Response): void {
-  const data = categoriesService.getCategoryProducts(req.params.id)
+  const { sort, minPrice, maxPrice, delivery } = req.query
+  const validSorts = [
+    'default', 'price-asc', 'price-desc', 'name',
+    'sales', 'popularity', 'newest', 'rating',
+  ] as const
+  const filters = {
+    sort:
+      typeof sort === 'string' && validSorts.includes(sort as (typeof validSorts)[number])
+        ? (sort as (typeof validSorts)[number])
+        : undefined,
+    minPrice: minPrice !== undefined ? Number(minPrice) || undefined : undefined,
+    maxPrice: maxPrice !== undefined ? Number(maxPrice) || undefined : undefined,
+    delivery: typeof delivery === 'string' ? delivery : undefined,
+  }
+  const data = categoriesService.getCategoryProducts(req.params.id, filters)
   res.status(200).json({
     success: true,
     data,
