@@ -9,8 +9,13 @@
       <div class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-semibold text-primary-700">
         {{ robot.scenario }}
       </div>
-      <div class="absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-rose-500 text-white text-xs font-bold shadow-md">
-        已租 {{ robot.rentedCount }} 次
+      <div class="absolute bottom-3 right-3 flex flex-col gap-1 items-end">
+        <div class="px-2.5 py-1 rounded-full bg-orange-500 text-white text-xs font-bold shadow-md">
+          已售 {{ robot.sales }} 台
+        </div>
+        <div class="px-2.5 py-1 rounded-full bg-rose-500 text-white text-xs font-bold shadow-md">
+          已租 {{ robot.rentedCount }} 次
+        </div>
       </div>
     </div>
     <div class="p-4">

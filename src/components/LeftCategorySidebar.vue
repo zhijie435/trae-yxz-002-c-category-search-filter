@@ -498,10 +498,16 @@ watch(activeCategory, () => {
 })
 
 watch(
-  () => [filters.sort, filters.minPrice, filters.maxPrice, filters.delivery],
+  () => ({
+    sort: filters.sort,
+    minPrice: filters.minPrice,
+    maxPrice: filters.maxPrice,
+    delivery: filters.delivery,
+  }),
   () => {
     loadCategoryProducts()
   },
+  { deep: true },
 )
 
 onMounted(() => {
