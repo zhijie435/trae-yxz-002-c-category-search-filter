@@ -21,6 +21,8 @@ export const robots: Robot[] = [
     popularity: 9500,
     createdAt: '2023-06-15',
     deliveryMethod: ['送货上门', '上门安装', '全国联保'],
+    dailyPrice: 398,
+    rentedCount: 156,
   },
   {
     id: '2',
@@ -42,6 +44,8 @@ export const robots: Robot[] = [
     popularity: 12500,
     createdAt: '2023-09-20',
     deliveryMethod: ['送货上门', '上门安装'],
+    dailyPrice: 128,
+    rentedCount: 892,
   },
   {
     id: '3',
@@ -63,6 +67,8 @@ export const robots: Robot[] = [
     popularity: 6800,
     createdAt: '2023-04-10',
     deliveryMethod: ['送货上门', '上门安装', '专业培训'],
+    dailyPrice: 268,
+    rentedCount: 234,
   },
   {
     id: '4',
@@ -84,6 +90,8 @@ export const robots: Robot[] = [
     popularity: 35000,
     createdAt: '2024-01-05',
     deliveryMethod: ['快递包邮', '7天无理由'],
+    dailyPrice: 19,
+    rentedCount: 3256,
   },
   {
     id: '5',
@@ -105,6 +113,8 @@ export const robots: Robot[] = [
     popularity: 15600,
     createdAt: '2023-07-18',
     deliveryMethod: ['送货上门', '上门安装', '驻场调试'],
+    dailyPrice: 238,
+    rentedCount: 456,
   },
   {
     id: '6',
@@ -126,6 +136,8 @@ export const robots: Robot[] = [
     popularity: 5200,
     createdAt: '2023-11-30',
     deliveryMethod: ['送货上门', '上门安装', '专业培训'],
+    dailyPrice: 488,
+    rentedCount: 98,
   },
   {
     id: '7',
@@ -147,6 +159,8 @@ export const robots: Robot[] = [
     popularity: 8900,
     createdAt: '2023-03-22',
     deliveryMethod: ['送货上门', '上门安装', '驻场调试', '一年保修'],
+    dailyPrice: 598,
+    rentedCount: 78,
   },
   {
     id: '8',
@@ -168,6 +182,8 @@ export const robots: Robot[] = [
     popularity: 22000,
     createdAt: '2024-02-10',
     deliveryMethod: ['送货上门', '上门安装'],
+    dailyPrice: 98,
+    rentedCount: 1586,
   },
   {
     id: '9',
@@ -189,6 +205,8 @@ export const robots: Robot[] = [
     popularity: 4500,
     createdAt: '2023-02-14',
     deliveryMethod: ['送货上门', '上门安装', '专业培训', '三年保修'],
+    dailyPrice: 798,
+    rentedCount: 45,
   },
   {
     id: '10',
@@ -210,6 +228,8 @@ export const robots: Robot[] = [
     popularity: 11000,
     createdAt: '2023-12-01',
     deliveryMethod: ['快递包邮', '技术支持'],
+    dailyPrice: 58,
+    rentedCount: 892,
   },
   {
     id: '11',
@@ -231,6 +251,8 @@ export const robots: Robot[] = [
     popularity: 7800,
     createdAt: '2023-05-08',
     deliveryMethod: ['送货上门', '上门安装', '驻场调试', '一年保修'],
+    dailyPrice: 988,
+    rentedCount: 36,
   },
   {
     id: '12',
@@ -252,6 +274,8 @@ export const robots: Robot[] = [
     popularity: 3600,
     createdAt: '2024-01-20',
     deliveryMethod: ['送货上门', '上门安装', '专业培训', '三年保修'],
+    dailyPrice: 888,
+    rentedCount: 28,
   },
 ]
 

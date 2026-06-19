@@ -14,6 +14,8 @@ export interface Robot {
   popularity: number
   createdAt: string
   deliveryMethod: string[]
+  dailyPrice: number
+  rentedCount: number
 }
 
 export interface CategoryProductGroup {
