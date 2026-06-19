@@ -5,6 +5,7 @@ import type {
   Solution,
   AiArticle,
   ScenarioCategory,
+  CategoryProductGroup,
 } from '../types'
 import {
   manufacturers,
@@ -14,6 +15,7 @@ import {
   aiArticles,
   scenarioCategories,
 } from '../data/categories'
+import { robots } from '../data/robots'
 
 class CategoriesService {
   getManufacturers(): Manufacturer[] {
@@ -40,6 +42,17 @@ class CategoriesService {
 
   getScenarioCategories(): ScenarioCategory[] {
     return scenarioCategories
+  }
+
+  getCategoryProducts(categoryId: string): CategoryProductGroup[] {
+    const category = scenarioCategories.find((c) => c.id === categoryId)
+    if (!category || !category.children) return []
+    return category.children.map((sub) => ({
+      id: sub.id,
+      name: sub.name,
+      count: sub.count,
+      products: robots.filter((r) => r.subCategoryId === sub.id),
+    }))
   }
 }
 

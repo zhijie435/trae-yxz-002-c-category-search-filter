@@ -5,6 +5,7 @@ import type {
   Solution,
   AiArticle,
   ScenarioCategory,
+  CategoryProductGroup,
 } from '@/types'
 
 const BASE = '/api'
@@ -51,6 +52,15 @@ export async function fetchAiArticles(limit = 6): Promise<AiArticle[]> {
 export async function fetchScenarioCategories(): Promise<ScenarioCategory[]> {
   const res = await fetch(`${BASE}/scenario-categories`)
   if (!res.ok) throw new Error('Failed to fetch scenario categories')
+  const json = await res.json()
+  return json.data
+}
+
+export async function fetchCategoryProducts(
+  categoryId: string,
+): Promise<CategoryProductGroup[]> {
+  const res = await fetch(`${BASE}/scenario-categories/${categoryId}/products`)
+  if (!res.ok) throw new Error('Failed to fetch category products')
   const json = await res.json()
   return json.data
 }

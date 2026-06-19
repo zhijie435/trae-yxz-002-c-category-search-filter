@@ -8,6 +8,14 @@ export interface Robot {
   description: string
   image: string
   specs: { label: string; value: string }[]
+  subCategoryId?: string
+}
+
+export interface CategoryProductGroup {
+  id: string
+  name: string
+  count: number
+  products: Robot[]
 }
 
 export interface SearchQuery {

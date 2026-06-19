@@ -50,3 +50,11 @@ export function getScenarioCategories(req: Request, res: Response): void {
     data,
   })
 }
+
+export function getCategoryProducts(req: Request, res: Response): void {
+  const data = categoriesService.getCategoryProducts(req.params.id)
+  res.status(200).json({
+    success: true,
+    data,
+  })
+}

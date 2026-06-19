@@ -67,7 +67,7 @@
 
     <div
       v-if="activeCategory && activeCategory.children"
-      class="flex-1 bg-white rounded-2xl border border-black/5 shadow-soft p-5 min-h-[420px]"
+      class="w-72 flex-shrink-0 bg-white rounded-2xl border border-black/5 shadow-soft p-5 min-h-[420px]"
     >
       <div class="mb-4">
         <div class="flex items-center gap-2 mb-1">
@@ -110,14 +110,54 @@
         </div>
       </div>
     </div>
+
+    <div class="flex-1 bg-white rounded-2xl border border-black/5 shadow-soft p-5 min-h-[420px]">
+      <div class="flex items-center gap-2 mb-4">
+        <Boxes class="w-5 h-5 text-primary-600" />
+        <h3 class="text-base font-bold text-ink">商品展示</h3>
+        <span class="text-xs text-gray-400">按二级分类分组</span>
+      </div>
+
+      <div v-if="productsLoading" class="py-20 text-center text-sm text-gray-400">
+        加载中...
+      </div>
+
+      <div
+        v-else-if="productGroups.length === 0"
+        class="py-20 text-center text-sm text-gray-400"
+      >
+        暂无商品
+      </div>
+
+      <div v-else class="space-y-6">
+        <div v-for="group in productGroups" :key="group.id">
+          <div class="flex items-center gap-2 mb-3">
+            <div :class="['w-1 h-4 rounded-full', activeAccent]" />
+            <h4 class="text-sm font-bold text-ink">{{ group.name }}</h4>
+            <span class="text-[11px] text-gray-400">{{ group.products.length }}款商品</span>
+          </div>
+          <div v-if="group.products.length > 0" class="grid grid-cols-2 gap-4">
+            <RobotCard
+              v-for="robot in group.products"
+              :key="robot.id"
+              :robot="robot"
+            />
+          </div>
+          <div v-else class="pl-3 py-2 text-xs text-gray-400">
+            该分类暂无商品
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import {
   LayoutGrid,
   ChevronRight,
+  Boxes,
   Factory,
   UtensilsCrossed,
   HeartPulse,
@@ -127,8 +167,9 @@ import {
   Sprout,
   Home,
 } from 'lucide-vue-next'
-import { fetchScenarioCategories } from '@/api/categories'
-import type { ScenarioCategory } from '@/types'
+import { fetchScenarioCategories, fetchCategoryProducts } from '@/api/categories'
+import RobotCard from '@/components/RobotCard.vue'
+import type { ScenarioCategory, CategoryProductGroup } from '@/types'
 
 const iconMap: Record<string, any> = {
   Factory,
@@ -181,11 +222,18 @@ const colorMap: Record<
 
 const scenarioCategories = ref<ScenarioCategory[]>([])
 const activeIndex = ref(0)
+const productGroups = ref<CategoryProductGroup[]>([])
+const productsLoading = ref(false)
+let productRequestId = 0
 
 const activeCategory = computed(() => {
   if (scenarioCategories.value.length === 0) return null
   return scenarioCategories.value[activeIndex.value]
 })
+
+const activeAccent = computed(
+  () => colorMap[activeCategory.value?.color ?? '']?.iconBgActive || 'bg-primary-500',
+)
 
 function handleCategoryHover(index: number) {
   activeIndex.value = index
@@ -202,6 +250,30 @@ async function loadScenarioCategories() {
     console.error('Failed to load scenario categories:', e)
   }
 }
+
+async function loadCategoryProducts() {
+  const cat = activeCategory.value
+  if (!cat) return
+  const requestId = ++productRequestId
+  productsLoading.value = true
+  try {
+    const data = await fetchCategoryProducts(cat.id)
+    if (requestId !== productRequestId) return
+    productGroups.value = data
+  } catch (e) {
+    if (requestId !== productRequestId) return
+    console.error('Failed to load category products:', e)
+    productGroups.value = []
+  } finally {
+    if (requestId === productRequestId) {
+      productsLoading.value = false
+    }
+  }
+}
+
+watch(activeCategory, () => {
+  loadCategoryProducts()
+})
 
 onMounted(() => {
   loadScenarioCategories()

@@ -8,6 +8,7 @@ export interface Robot {
   description: string
   image: string
   specs: { label: string; value: string }[]
+  subCategoryId?: string
 }
 
 export type SearchField = 'name' | 'scenario' | 'model'
@@ -112,4 +113,11 @@ export interface ScenarioThirdCategory {
   id: string
   name: string
   count: number
+}
+
+export interface CategoryProductGroup {
+  id: string
+  name: string
+  count: number
+  products: Robot[]
 }
